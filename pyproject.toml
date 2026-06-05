@@ -1,0 +1,71 @@
+[project]
+name = "astrum"
+version = "0.1.0"
+description = "A lightweight, in-process async DAG orchestrator for high-performance task execution."
+readme = "README.md"
+requires-python = ">=3.9"  # 提高兼容性，代码中使用了 3.9+ 的类型语法
+license = {text = "MIT"}
+authors = [
+    {name = "DuskXi", email = "leizidusk@gmail.com"}
+]
+keywords = ["asyncio", "dag", "scheduler", "task-graph", "agent-orchestration"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+# 核心逻辑尽量保持零依赖
+dependencies = [
+    "loguru>=0.7.3",
+    "pydantic>=2.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/DuskXi/astrum"
+Documentation = "https://duskxi.github.io/astrum/"
+Repository = "https://github.com/DuskXi/astrum"
+Issues = "https://github.com/DuskXi/astrum/issues"
+
+[project.optional-dependencies]
+# 将 rich 作为可选依赖，仅在用户需要可视化仪表盘时安装
+viz = ["rich>=10.0.0"]
+docs = [
+    "mkdocs>=1.6.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.25.0",
+    "mkdocs-static-i18n>=1.2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+managed = true
+dev-dependencies = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.20.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astrum"]  # 强制只打包 src 里的内容到 wheel 包中
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/examples",             # 源码包 (tar.gz) 可以包含示例，方便他人学习
+    "/README.md",
+    "/USAGE.zh.md",
+    "/USAGE.en.md",
+    "/LICENSE",
+]
+exclude = [
+    "/tests",                # 通常源码包也不建议带上测试，保持轻量
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"        # 自动识别标记为 async 的测试函数
+pythonpath = ["src"]         # 确保测试时能正确导入 src 下的包
