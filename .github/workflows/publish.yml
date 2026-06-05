@@ -1,0 +1,191 @@
+name: Publish to PyPI
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - "3.9"
+          - "3.11"
+          - "3.12"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Install dependencies
+        run: uv sync --extra docs --extra viz --frozen --python ${{ matrix.python-version }}
+
+      - name: Run tests
+        run: uv run python -m pytest -q
+
+      - name: Compile sources, tests, and examples
+        run: uv run python -m compileall -q src tests examples
+
+      - name: Build documentation
+        run: uv run python -m mkdocs build --strict
+
+  build:
+    name: Build distributions
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Validate release tag
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          if [[ ! "${tag}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Release tag must match vX.Y.Z, got: ${tag}" >&2
+            exit 1
+          fi
+
+          tag_version="${tag#v}"
+          project_version="$(python -c 'import tomllib; print(tomllib.load(open("pyproject.toml", "rb"))["project"]["version"])')"
+
+          if [[ "${project_version}" != "${tag_version}" ]]; then
+            echo "Tag ${tag} does not match pyproject version ${project_version}" >&2
+            exit 1
+          fi
+
+      - name: Install dependencies
+        run: uv sync --extra docs --extra viz --frozen --python 3.11
+
+      - name: Build distributions
+        run: uv build --out-dir dist
+
+      - name: Check distributions
+        run: uvx twine check dist/*
+
+      - name: Inspect distribution contents
+        run: |
+          python - <<'PY'
+          import tarfile
+          import zipfile
+          from pathlib import Path
+
+          dist = Path("dist")
+          wheels = sorted(dist.glob("astrum-*.whl"))
+          sdists = sorted(dist.glob("astrum-*.tar.gz"))
+          needles = [
+              b"meshflow",
+              b"Meshflow",
+              b"MeshFlow",
+              b"MESHFLOW",
+              b"aestral",
+              b"Aestral",
+              b"AESTRAL",
+          ]
+
+          if len(wheels) != 1 or len(sdists) != 1:
+              raise SystemExit(f"Expected one wheel and one sdist, got: {wheels}, {sdists}")
+
+          wheel = wheels[0]
+          sdist = sdists[0]
+
+          with zipfile.ZipFile(wheel) as zf:
+              names = zf.namelist()
+              if not any(name.startswith("astrum/") for name in names):
+                  raise SystemExit("Wheel does not contain the astrum package")
+              if any(name.startswith(("meshflow/", "aestral/")) for name in names):
+                  raise SystemExit("Wheel contains an old package directory")
+              metadata_name = next(name for name in names if name.endswith(".dist-info/METADATA"))
+              metadata = zf.read(metadata_name)
+              if b"Name: astrum" not in metadata:
+                  raise SystemExit("Wheel metadata does not identify astrum")
+              for name in names:
+                  data = zf.read(name)
+                  if any(needle in data or needle.decode("ascii") in name for needle in needles):
+                      raise SystemExit(f"Old project name found in wheel member: {name}")
+
+          with tarfile.open(sdist, "r:gz") as tf:
+              for member in tf.getmembers():
+                  hit = any(needle.decode("ascii") in member.name for needle in needles)
+                  if member.isfile():
+                      data = tf.extractfile(member).read()
+                      hit = hit or any(needle in data for needle in needles)
+                  if hit:
+                      raise SystemExit(f"Old project name found in sdist member: {member.name}")
+          PY
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/astrum/
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-distributions
+          path: dist
+
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: Create GitHub Release
+    needs: publish
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-distributions
+          path: dist
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.ref_name }}
+        run: |
+          gh release create "${TAG_NAME}" dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Astrum ${TAG_NAME}" \
+            --generate-notes

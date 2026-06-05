@@ -220,9 +220,9 @@ uv run mkdocs build --strict
 
 ## Project Status / 项目状态
 
-Current version: **0.1.0**.
+Current version: **0.1.1**.
 
-Astrum 0.1.0 initial public release; APIs may change in 0.1.x.
+Astrum 0.1.1 is the recommended early testing release; APIs may change in 0.1.x.
 
 Astrum 已经初次发布到 PyPI。在 `0.1.x` 阶段仍可能围绕 API 命名、文档和类型检查体验做小幅改进。
 
