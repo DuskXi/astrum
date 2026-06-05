@@ -7,7 +7,7 @@ import gc
 import typing
 from dataclasses import dataclass
 from types import SimpleNamespace
-from typing import Optional, Dict, Any, Union, Callable, Literal, Awaitable, Annotated, get_type_hints, get_origin, get_args
+from typing import Optional, Dict, Any, Union, Callable, Literal, Awaitable, Annotated, Type, get_type_hints, get_origin, get_args
 from typing import Annotated as Ref
 
 from pydantic import BaseModel, Field, field_validator
@@ -20,8 +20,8 @@ import re
 
 from .models import TaskOrder
 
-CommonDataModelType = type[dict] | type[list] | type[tuple] | type[set] | type[str] | type[int] | type[float] | type[bool] | type[bytes]
-DataModelType = type[BaseModel] | CommonDataModelType | type
+CommonDataModelType = Union[Type[dict], Type[list], Type[tuple], Type[set], Type[str], Type[int], Type[float], Type[bool], Type[bytes]]
+DataModelType = Union[Type[BaseModel], CommonDataModelType, type]
 COMMON_DATA_MODEL_TYPES = (dict, list, tuple, set, str, int, float, bool, bytes)
 
 
@@ -74,7 +74,7 @@ class DTRela(BaseModel):
     index: Optional[int] = Field(default=None, description="Data Index(data key and data index cannot empty at the same time)")
     single_item: bool = Field(default=False, description="Task single item, if your function only accept one item or ont output item")
     related_task: str = Field(description="Related task id, if data key is not empty, related task id cannot be empty")
-    from_function: Optional[Callable[..., Any] | Any] = Field(default=None, description="From function, if it is not None, related_task will be ignored when parent container is from_relation")
+    from_function: Optional[Any] = Field(default=None, description="From function, if it is not None, related_task will be ignored when parent container is from_relation")
 
     # def __eq__(self, other: DTRela) -> bool:
     #     if isinstance(other, DTRela):

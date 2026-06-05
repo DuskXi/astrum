@@ -4,7 +4,7 @@ import asyncio
 import inspect
 import time
 from collections.abc import Awaitable, Callable
-from typing import Any
+from typing import Any, Union
 
 from .models import (
     ExecutionReport,
@@ -20,7 +20,7 @@ from .models import (
 from .planner import ExecutionPlanner
 from .data_transport import TaskData
 
-TaskCallable = Callable[..., Awaitable[Any] | Any]
+TaskCallable = Callable[..., Union[Awaitable[Any], Any]]
 
 
 class DynamicScheduler:
