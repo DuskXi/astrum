@@ -293,10 +293,6 @@ def _register_function(
         for dependency in depends_on:
             if dependency not in data.from_tasks:
                 data.from_tasks.append(dependency)
-        # TODO: 调用 type_tools.match_input_type / match_output_type 校验 func 与
-        #       data.input_data_item / data.output_data_item 的类型一致性，
-        #       不通过抛 TypeMatchError；注意 data.input_data_item 中每一项可声明
-        #       single_item / key / index 三种入参定位方式，需要逐项校验。
         setattr(func, "_scheduler_task_data", data)
 
     registry._tasks[resolved_task_id] = RegisteredTask(task_id=resolved_task_id, function=func, depends_on=depends_on, data=data, retry=retry)

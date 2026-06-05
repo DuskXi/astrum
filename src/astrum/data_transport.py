@@ -190,8 +190,6 @@ def autocast_data_transports_path(data_transports: list[TaskData], task_orders: 
         # 将列表中的错误信息用换行符连接起来，方便阅读
         error_msg = "Data transport validation failed with the following errors:\n- " + "\n- ".join(errors)
         raise ValueError(error_msg)
-        # TODO: 将这里积攒起来一次性抛出，防止改完一个才发现另一个有问题
-        # 已完成
 
     # task_orders 自动传播无related_task的情况
     # for data_transport in data_transports:
@@ -217,7 +215,6 @@ def autocast_data_transports_path(data_transports: list[TaskData], task_orders: 
                     forward_data_map[data_transport.task_id].append((to_data.to_relation.related_task, to_data, data_transport, to_data.to_relation, "to"))
                     forward_data_map[to_data.to_relation.related_task].append((data_transport.task_id, to_data, data_transport, to_data.to_relation, "to"))
 
-    # TODO: from_relation 和 to_relation 也需要自动传播
     # 传播数据引用
     for from_id, forward_data in forward_data_map.items():
         for data in forward_data:
@@ -226,8 +223,6 @@ def autocast_data_transports_path(data_transports: list[TaskData], task_orders: 
             if key not in data_ref_map:
                 data_ref_map[key] = DataRef()
             data_item.data_ref = data_ref_map[key]
-            # TODO: 这里需要额外在forward_data_map记录到底是from relation还是 to relation 以推断这里需要找的是input还是output
-            # 已完成传播，包括(input/output)_data_item级和(from/to)_relation级自动传播，等待审查
             if dir_type == "from":
                 # 在前向映射中，记录的时候为from_relation，那么就要将数据映射到目标task的to_relation
                 # 1. 找到目标对象

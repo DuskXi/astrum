@@ -14,6 +14,12 @@ Astrum is a lightweight, in-process, asynchronous task scheduling library design
 
 It is engineered to squeeze every last drop of performance out of complex, multi-dependency parallel task systems. Common use cases include business logic requiring workflow orchestration within a single Python process, or scenarios needing to simulate complex DAG execution in testing environments—such as Multi-Agent systems, complex data processing pipelines, and asynchronous task orchestration.
 
+---
+
+Astrum 还处于早期阶段，现在社区反馈对我非常重要。我尤其希望听到真实工作流中的使用体验：如果 API 不顺手、概念不清楚、行为太魔法、文档没讲明白，或者你觉得某个能力应该做 / 不应该做，请直接提 issue。这些反馈会直接影响 `0.2.0` 之前的 API 设计。
+
+Astrum is still early, and community feedback is very important right now. I am especially looking for feedback from people who try it in real workflows. If the API feels awkward, unclear, too magical, or missing an important concept, please open an issue — this feedback will directly shape the path to `0.2.0`.
+
 ## Installation / 安装
 
 ```bash
@@ -29,6 +35,33 @@ pip install "astrum[viz]"
 如果需要在终端查看 DAG 和数据传输可视化，请安装 `viz` 可选依赖。
 
 Examples that render Rich tables or trees, such as the coffee shop workflow, require the `viz` extra.
+
+## Current status
+
+Astrum is currently in the early `0.1.x` stage.
+
+The core execution model is usable today, but the public API may still receive small refinements before `0.2.0`.
+
+I am actively looking for community feedback, especially from people building real async Python workflows, AI Agent pipelines, RAG systems, backend task flows, local automation tools, and small ETL-style pipelines.
+
+If you try Astrum and something feels unclear, awkward, too magical, too limited, or badly named, please open an issue. Real usage feedback is extremely important for shaping the API before it becomes stable.
+
+## Why Astrum?
+
+Plain `asyncio.gather` is great when you only need to run a list of coroutines concurrently.
+
+But real workflows often look more like this:
+
+- some tasks can run in parallel;
+- some tasks depend on previous results;
+- downstream tasks need only part of an upstream result;
+- failures and retries should be visible;
+- the final execution should produce a structured report;
+- the whole thing should stay inside a normal Python process.
+
+Astrum provides a small task graph layer for these cases.
+
+It is not a workflow platform. It does not require a scheduler, database, webserver, worker cluster, or message broker.
 
 ## How convenient is this library to use? / 这个库使用起来有多方便？
 

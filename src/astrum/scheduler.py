@@ -51,8 +51,6 @@ class DynamicScheduler:
         silence: bool = True,
     ) -> None:
         self.ignore_tail_task = ignore_tail_task or []
-        # TODO: 与 resolve_task_data 串联，确保进入 scheduler 的 task_data_refs
-        #       已经过校验/补全（期望调用方在 build_task_orders 之前已调用过）。
         self.task_data_refs = task_data_refs or {}
         self.has_data_path = has_data_path
         self.silence = silence
@@ -343,11 +341,6 @@ class DynamicScheduler:
 
         task_data = self.task_data_refs.get(task_name)
 
-        # TODO: 根据 task_data.input_data_item 从 self._task_outputs 收集 kwargs / 位置参数；
-        #       支持 single_item、key、index、from_function 几种来源；缺失值或类型不匹配
-        #       应直接在此抛错以快速失败（当前 stage 内的 task 会被随后的失败分支统一取消）。
-        #       已完成编写，未进行审核
-
         kwargs: dict[str, Any] = {}
         args: list[Any] = []
 
@@ -366,8 +359,6 @@ class DynamicScheduler:
                         index_map.append((input_data.to_relation.index, value))
                     else:
                         index_map.append((0, value))
-                        # TODO: 此处需要在预先检查中杜绝single_item和key与index共存，以及多个single_item共存的情况；当前实现是"单索引默认0"，但更合理的做法是强制单索引必须明确index=0，并且不允许与其他index共存。
-                        # data_transport.final_check 已实现
             if index_map:
                 index_min = min(map(lambda x: x[0], index_map))
                 index_max = max(map(lambda x: x[0], index_map))
@@ -381,13 +372,8 @@ class DynamicScheduler:
 
         self.task_return_set[task_name] = result
 
-        # TODO: 根据 task_data.output_data_item 校验/拆分 result 后再写入下游可见的输出表；
-        #       例如多输出场景下，此处需要把 result 拆成多个 key/index 子结果，供 _invoke_task
-        #       的下游入参装配按 key/index 检索。
-        #       已完成编写，未进行审核
 
         if task_data:
-            # TODO: 对要写入缓存的数据进行类型检查
             if len(task_data.output_data_item) == 1 and task_data.output_data_item[0].from_relation.key is None and task_data.output_data_item[0].from_relation.index is None:
                 # 单输出且无 key/index 约束，直接把整个 result 作为下游输入
                 task_data.output_data_item[0].data_ref.data = result
