@@ -178,6 +178,13 @@ class SchedulerRegistry:
 
         改造前这里会立刻 ``func()`` 把任务定格成无参协程；改造后保留函数引用，
         由 :class:`DynamicScheduler` 在调度期决定何时调用以及如何注入参数。
+
+        Return a list of (task_id, callable) pairs.
+
+        Before the refactor, this would immediately call ``func()`` and freeze the
+        task as a no-argument coroutine; after the refactor, it keeps the function
+        reference and lets :class:`DynamicScheduler` decide when to call it and how
+        to inject parameters during scheduling.
         """
 
         selected_task_ids = self._collect_task_ids(target_tasks)
@@ -371,6 +378,13 @@ def use_namespace(namespace: str) -> Iterator[SchedulerRegistry]:
     ``with use_namespace("analytics"):`` 块内的 ``@task`` 装饰器与
     ``build_scheduler`` / ``run`` 等模块级函数将默认作用于该命名空间。
     支持嵌套，退出 ``with`` 后会自动恢复上一层命名空间。
+
+    Temporarily switch the active namespace to ``namespace``.
+
+    Inside a ``with use_namespace("analytics"):`` block, the ``@task`` decorator and
+    module-level functions such as ``build_scheduler`` / ``run`` default to that
+    namespace. Nesting is supported; after leaving the ``with`` block, the previous
+    namespace is restored automatically.
     """
 
     token = _HUB.push(namespace)
@@ -393,6 +407,19 @@ def task(
     ``use_namespace`` 上下文栈顶 > :data:`DEFAULT_NAMESPACE`。注意命名空间
     会在 ``@`` 装饰发生时即时解析，因此把 ``task(...)`` 调用放在
     ``with use_namespace(...)`` 块内即可获得上下文绑定的效果。
+
+    Module-level task decorator.
+
+    Except for the extra ``namespace`` parameter, its signature and behavior are
+    exactly the same as :meth:`SchedulerRegistry.task`: both delegate to
+    :func:`_register_function`, so future changes to the underlying registration
+    behavior only need to modify that one function.
+
+    Namespace resolution priority: explicit ``namespace=`` parameter >
+    top of the ``use_namespace`` context stack > :data:`DEFAULT_NAMESPACE`. Note
+    that the namespace is resolved immediately when the ``@`` decoration happens,
+    so placing the ``task(...)`` call inside a ``with use_namespace(...)`` block is
+    enough to get the context-bound effect.
     """
 
     dependencies = tuple(depends_on or ())
@@ -405,19 +432,29 @@ def task(
 
 
 def get_registry(namespace: str | None = None) -> SchedulerRegistry:
-    """返回指定命名空间对应的 :class:`SchedulerRegistry`（不存在则按需创建）。"""
+    """返回指定命名空间对应的 :class:`SchedulerRegistry`（不存在则按需创建）。
+
+    Return the :class:`SchedulerRegistry` for the specified namespace, creating it
+    on demand if it does not exist.
+    """
 
     return _HUB.get(namespace)
 
 
 def clear_registry(namespace: str | None = None) -> None:
-    """清除全局 hub 中的注册表。``namespace=None`` 时清空所有命名空间。"""
+    """清除全局 hub 中的注册表。``namespace=None`` 时清空所有命名空间。
+
+    Clear registries in the global hub. When ``namespace=None``, clear all namespaces.
+    """
 
     _HUB.clear(namespace)
 
 
 def active_namespace() -> str:
-    """返回当前激活的命名空间名。"""
+    """返回当前激活的命名空间名。
+
+    Return the name of the currently active namespace.
+    """
 
     return _HUB.active()
 

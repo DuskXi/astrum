@@ -51,6 +51,49 @@ class AstrumConfig:
     - ``concurrency_limit`` – 全局并发限制。设为 ``None`` 表示不限制；
       设为正整数 N 时，内部自动创建 ``asyncio.Semaphore(N)``。默认 ``None``。
     - ``ignore_tail_task`` – 执行完成后不等待的末端任务列表。默认空列表。
+
+    Astrum's one-stop configuration object for the scheduling engine.
+
+    All parameters have safe defaults and can be overridden as needed.
+
+    **Type checking / AST inference**
+
+    - ``skip_type_check`` – Skip type matching validation for ``allow_data_model``.
+      When enabled, type constraints on DataItem will not take effect. Defaults to ``False``.
+    - ``infer_via_ast`` – When a function lacks a return value annotation
+      (``-> type``), automatically use AST static analysis to infer the return type.
+      Defaults to ``False``.
+    - ``strict_topology`` – Strict topology validation mode. When ``True``, an error
+      is raised if from/to relations inferred by data transport are not explicitly
+      declared in ``TaskData.from_tasks`` / ``to_tasks``. Defaults to ``False``.
+
+    **Data transport**
+
+    - ``allow_no_dir_definition`` – Allow DataItem to lack source or destination
+      definitions. This is usually set to ``True`` in decorator mode because the
+      framework completes them automatically; in manual mode, setting it to ``False``
+      can catch omissions. Defaults to ``True``.
+    - ``auto_sync_dependencies`` – Automatically sync ``from_tasks`` relations inferred
+      by data transport back to the task graph's ``dependencies``. When disabled,
+      users must manually declare ``depends_on``. Defaults to ``True``.
+
+    **Visualization**
+
+    - ``visualize`` – Whether to use Rich to print the DAG tree and Data Transport
+      Matrix in the terminal after DAG construction completes. Defaults to ``False``.
+    - ``silence_warnings`` – Silence DEBUG/WARNING log output during automatic
+      completion, such as "undeclared relation has been automatically declared".
+      Defaults to ``False``.
+
+    **Execution engine**
+
+    - ``silence`` – Silence mode. When ``True``, the scheduler does not output
+      execution-time logs. Defaults to ``True``.
+    - ``concurrency_limit`` – Global concurrency limit. Set to ``None`` for no limit;
+      set to a positive integer N to automatically create ``asyncio.Semaphore(N)``
+      internally. Defaults to ``None``.
+    - ``ignore_tail_task`` – List of tail tasks not to wait for after execution
+      completes. Defaults to an empty list.
     """
 
     # ── 类型检查 ──
@@ -72,7 +115,10 @@ class AstrumConfig:
     ignore_tail_task: list[str] = field(default_factory=list)
 
     def build_semaphore(self) -> asyncio.Semaphore | None:
-        """根据 ``concurrency_limit`` 创建信号量对象。"""
+        """根据 ``concurrency_limit`` 创建信号量对象。
+
+        Create a semaphore object according to ``concurrency_limit``.
+        """
         if self.concurrency_limit is not None and self.concurrency_limit > 0:
             return asyncio.Semaphore(self.concurrency_limit)
         return None

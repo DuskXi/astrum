@@ -552,6 +552,9 @@ def _append_unique(items: Optional[list[str]], value: str) -> None:
 def unwrap_to_callable(target: Callable | Awaitable) -> Callable:
     """
     将 Callable 或 Awaitable (协程对象) 统一转为原始的 Callable 函数对象。
+
+    Convert a Callable or Awaitable (coroutine object) into the original Callable
+    function object in a unified way.
     """
     # 1. 如果传入的已经是 Callable (例如直接传入了 func)
     if callable(target):
@@ -709,7 +712,11 @@ def final_check(
 
 
 def check_from_function_type(from_function: Any, allow_data_model: Optional[DataModelType], task_id: Optional[str], infer_via_ast: bool = True) -> None:
-    """检查 from_function 或其默认值的类型是否符合 allow_data_model 定义"""
+    """检查 from_function 或其默认值的类型是否符合 allow_data_model 定义
+
+    Check whether the type of from_function or its default value conforms to the
+    allow_data_model definition.
+    """
     if from_function is None:
         return
     allow_data_model = normalize_data_model(allow_data_model)
@@ -747,6 +754,22 @@ def resolve_task_data(task_orders: list[TaskOrder], data_transports: list[TaskDa
 
     应在 DAG 进入调度器之前调用一次，并据此结果决定是否阻断构建（致命逻辑错误
     会抛 ``ValueError``）。
+
+    Resolve data flow and automatically fill dependencies, while also validating
+    reference relations and type matching for default data / custom data sources.
+
+    Note: this function mutates the passed-in objects in place:
+
+    - ``task_orders``: when ``DataItem.from_relation`` / ``to_relation`` references
+      an undeclared dependency relation, the corresponding ``TaskOrder`` is
+      automatically appended to the target task's ``dependencies``.
+    - ``data_transports``: inferred source/destination task_id values are
+      automatically written into the corresponding ``TaskData`` object's
+      ``from_tasks`` / ``to_tasks``.
+
+    It should be called once before the DAG enters the scheduler, and the result
+    should be used to decide whether to block construction. Fatal logical errors
+    raise ``ValueError``.
     """
     task_order_map: dict[str, TaskOrder] = {}  # 任务依赖映射
     task_order_short_path: dict[str, list[str]] = {}  # 所有的任务路径

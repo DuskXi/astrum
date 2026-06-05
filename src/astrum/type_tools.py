@@ -12,7 +12,10 @@ AllowDataModelType = Optional[Union[type[BaseModel], type[dict], type[list]]]
 
 
 class TypeMatchError(TypeError):
-    """自定义类型匹配错误"""
+    """自定义类型匹配错误
+
+    Custom type matching error.
+    """
 
     pass
 
@@ -83,6 +86,8 @@ def _is_type_compatible(annotated_type: Any, allow_data_model: AllowDataModelTyp
 def match_input_type(func_obj: Any, allow_data_model: AllowDataModelType, key: Optional[str] = None, index: Optional[int] = None, single_object_mode: bool = False) -> None:
     """
     匹配输入参数的类型。
+
+    Match the type of input parameters.
     """
     real_func = _get_real_function(func_obj)
     sig = inspect.signature(real_func)
@@ -127,6 +132,10 @@ def match_output_type(func_obj: Any, allow_data_model: AllowDataModelType, max_d
     """
     匹配输出值的类型。
     融合版：支持标准注解解析 + 高级跨函数 AST 静态类型推断。
+
+    Match the type of output values.
+    Merged version: supports standard annotation parsing plus advanced
+    cross-function AST static type inference.
     """
     real_func = _get_real_function(func_obj)
     sig = inspect.signature(real_func)

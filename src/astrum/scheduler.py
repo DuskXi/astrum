@@ -30,6 +30,12 @@ class DynamicScheduler:
     callable，从而支持基于 :class:`TaskData` 的动态参数装配。**不再支持**
     将"已 call 但未 run 的协程对象"作为 task；这种用法会在 ``__init__``
     阶段直接抛 :class:`TypeError`。
+
+    Each task is passed in as ``(task_id, callable)``; the scheduler only actually
+    calls the callable during scheduling, which supports dynamic parameter assembly
+    based on :class:`TaskData`. Passing an "already called but not yet run coroutine
+    object" as a task is **no longer supported**; that usage raises
+    :class:`TypeError` directly during ``__init__``.
     """
 
     def __init__(
