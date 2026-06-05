@@ -1,0 +1,78 @@
+name: API design feedback / API 设计反馈
+description: Tell us where the public API feels awkward, unclear, or too magical. / 反馈公开 API 中不顺手、不清晰或过于魔法的地方。
+title: "[API]: "
+labels:
+  - api
+  - feedback
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Astrum is still in the early `0.1.x` stage. API feedback from real workflows is especially valuable before `0.2.0`.
+
+        Astrum 仍处于 `0.1.x` 早期阶段。真实工作流里的 API 反馈会直接影响 `0.2.0` 前的设计。
+  - type: textarea
+    id: workflow
+    attributes:
+      label: What were you trying to build? / 你想构建什么？
+      description: Describe the real workflow or example. / 描述你的真实工作流或示例场景。
+      placeholder: "Example: A RAG pipeline with parallel retrieval, merge, rerank, and final generation."
+    validations:
+      required: true
+  - type: dropdown
+    id: api-area
+    attributes:
+      label: API area / API 范围
+      multiple: true
+      options:
+        - "@task decorator / @task 装饰器"
+        - "depends_on"
+        - "Ref / F annotations"
+        - "TaskData / DataItem / DTRela"
+        - "SchedulerRegistry"
+        - "use_namespace / namespace"
+        - "build_scheduler / scheduler.execute"
+        - "run"
+        - "AstrumConfig"
+        - "ExecutionReport / statistics"
+        - "Errors and exceptions / 错误与异常"
+        - "Typing / 类型提示"
+        - "Other / 其他"
+    validations:
+      required: true
+  - type: textarea
+    id: awkward
+    attributes:
+      label: What felt awkward or unclear? / 哪里不顺手或不清晰？
+      description: Focus on naming, behavior, typing, mental model, or documentation gaps. / 可以从命名、行为、类型、心智模型或文档缺口说明。
+      placeholder: "Example: I expected Ref to point to the task return value directly, but field selection with F was hard to discover."
+    validations:
+      required: true
+  - type: textarea
+    id: current-code
+    attributes:
+      label: Current code / 当前写法
+      description: Show the code you wrote or wanted to write. / 展示你当前写出的代码或想写的代码。
+      render: python
+  - type: textarea
+    id: preferred-code
+    attributes:
+      label: Preferred API shape / 你期望的 API 形态
+      description: If you have an idea, show how you wish the API looked. / 如果你有想法，请展示你希望 API 如何书写。
+      render: python
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Impact / 影响程度
+      options:
+        - Blocks adoption / 会阻止我采用
+        - Significant friction / 明显影响使用体验
+        - Minor friction / 小的别扭
+        - Naming/documentation only / 主要是命名或文档问题
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered / 你考虑过的替代方案
+      description: Plain asyncio, Airflow, Prefect, Dagster, Celery, custom code, etc. / 例如原生 asyncio、Airflow、Prefect、Dagster、Celery、自写编排等。

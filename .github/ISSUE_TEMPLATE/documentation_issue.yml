@@ -1,0 +1,57 @@
+name: Documentation issue / 文档问题
+description: Report unclear, missing, outdated, or mistranslated documentation. / 报告不清楚、缺失、过时或翻译不准确的文档。
+title: "[Docs]: "
+labels:
+  - documentation
+body:
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language / 语言
+      options:
+        - Chinese / 中文
+        - English
+        - Both / 两者都有
+    validations:
+      required: true
+  - type: input
+    id: page
+    attributes:
+      label: Page or file / 页面或文件
+      description: Paste a docs URL or file path. / 粘贴文档 URL 或文件路径。
+      placeholder: "https://duskxi.github.io/astrum/quickstart/ or docs/guide.zh.md"
+    validations:
+      required: true
+  - type: textarea
+    id: issue
+    attributes:
+      label: What is unclear or wrong? / 哪里不清楚或有误？
+      description: Include the section title if possible. / 如果可以，请附上小节标题。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What should it say instead? / 你希望如何说明？
+      description: A rough suggestion is enough. / 粗略建议也可以。
+  - type: dropdown
+    id: docs-area
+    attributes:
+      label: Documentation area / 文档区域
+      options:
+        - Installation / 安装
+        - Quickstart / 快速开始
+        - Usage guide / 使用指南
+        - Examples / 示例
+        - External API Reference / 外部 API Reference
+        - Internal API Reference / 内部 API Reference
+        - README / README
+        - CONTRIBUTING / 贡献指南
+        - Other / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Reader context / 读者背景
+      description: What were you trying to learn or build? / 你当时想学习或构建什么？

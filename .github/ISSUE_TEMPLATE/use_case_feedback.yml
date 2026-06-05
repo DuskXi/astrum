@@ -1,0 +1,65 @@
+name: Use case feedback / 使用场景反馈
+description: Share how Astrum fits or does not fit your real workflow. / 分享 Astrum 是否适合你的真实工作流。
+title: "[Use case]: "
+labels:
+  - feedback
+  - use-case
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Real workflow stories are very useful for shaping Astrum before the public API becomes stable.
+
+        真实工作流反馈对 Astrum 在公开 API 稳定前的设计非常重要。
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow / 工作流
+      description: What kind of workflow did you try or consider using Astrum for? / 你尝试或考虑用 Astrum 编排什么工作流？
+      placeholder: "Example: Multi-agent research pipeline, RAG retrieval chain, backend API aggregation, local ETL..."
+    validations:
+      required: true
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain / 场景类型
+      options:
+        - AI Agent workflow / AI Agent 工作流
+        - RAG pipeline / RAG 流程
+        - Backend business workflow / 后端业务流程
+        - API aggregation / API 聚合
+        - File processing / 文件处理
+        - Local automation / 本地自动化
+        - ETL/data processing / ETL 或数据处理
+        - Testing/simulation / 测试或仿真
+        - Other / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: fit
+    attributes:
+      label: What fit well? / 哪些地方适合？
+      description: Which parts of Astrum felt useful or natural? / Astrum 哪些部分有用或自然？
+  - type: textarea
+    id: friction
+    attributes:
+      label: What did not fit? / 哪些地方不适合？
+      description: What felt missing, confusing, too small, too large, or too magical? / 哪些地方缺失、困惑、太小、太大或太魔法？
+    validations:
+      required: true
+  - type: textarea
+    id: graph-shape
+    attributes:
+      label: DAG shape / DAG 形态
+      description: Roughly describe the task graph shape if possible. / 如果可以，请粗略描述任务图形态。
+      placeholder: "Example: 2 independent loaders -> merge -> 3 parallel scorers -> rerank -> final report"
+  - type: textarea
+    id: comparison
+    attributes:
+      label: Compared with alternatives / 与替代方案相比
+      description: How did Astrum compare with plain asyncio, custom code, Airflow, Prefect, Dagster, Celery, etc.? / 与原生 asyncio、自写代码、Airflow、Prefect、Dagster、Celery 等相比如何？
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome / 结果
+      description: Did you adopt it, pause, switch tools, or keep evaluating? Why? / 你最终采用、暂停、换工具，还是继续评估？为什么？

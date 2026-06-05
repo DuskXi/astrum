@@ -1,0 +1,66 @@
+name: Feature request / 功能请求
+description: Propose a new capability for Astrum. / 为 Astrum 提议一个新能力。
+title: "[Feature]: "
+labels:
+  - enhancement
+  - feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please focus on the user problem first. Astrum aims to stay lightweight and in-process.
+
+        请先描述用户问题。Astrum 的目标是保持轻量、进程内运行。
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / 问题
+      description: What workflow or limitation does this feature address? / 这个功能想解决什么工作流或限制？
+      placeholder: "Example: I need to cancel downstream tasks when an upstream task returns an empty result."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution / 方案建议
+      description: Describe the behavior you want. / 描述你希望出现的行为。
+    validations:
+      required: true
+  - type: textarea
+    id: api
+    attributes:
+      label: Possible API / 可能的 API
+      description: Optional, but useful if the feature changes public APIs. / 可选；如果会影响公开 API，这会很有帮助。
+      render: python
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope fit / 范围匹配
+      description: Where does this fit? / 这个能力更接近哪类范围？
+      options:
+        - Core in-process scheduler / 核心进程内调度
+        - Data transport / 数据传输
+        - Developer experience / 开发体验
+        - Execution report/observability / 执行报告与可观测性
+        - Documentation/examples / 文档与示例
+        - Unsure / 不确定
+    validations:
+      required: true
+  - type: checkboxes
+    id: non-goals
+    attributes:
+      label: Scope check / 范围检查
+      description: Astrum is not intended to become a distributed workflow platform. / Astrum 当前不打算成为分布式工作流平台。
+      options:
+        - label: This does not require cross-machine scheduling. / 这个需求不要求跨机器调度。
+        - label: This does not require a persistent queue or database-backed workflow state. / 这个需求不要求持久化队列或数据库状态。
+        - label: This can work inside a normal Python process. / 这个需求可以在普通 Python 进程内完成。
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives / 替代方案
+      description: How do you solve this today? / 你现在如何解决这个问题？
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context / 补充信息

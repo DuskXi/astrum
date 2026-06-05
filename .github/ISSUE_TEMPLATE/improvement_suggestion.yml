@@ -1,0 +1,47 @@
+name: Improvement suggestion / 改进建议
+description: Suggest a non-breaking improvement, cleanup, performance change, or developer experience polish. / 提议非破坏性改进、清理、性能优化或开发体验优化。
+title: "[Improvement]: "
+labels:
+  - improvement
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: Current situation / 当前情况
+      description: What works today, but could be better? / 当前哪里可用但还能更好？
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested improvement / 改进建议
+      description: What would you change? / 你建议如何改？
+    validations:
+      required: true
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category / 类型
+      options:
+        - Performance / 性能
+        - Error messages / 错误信息
+        - Type hints / 类型提示
+        - Logging / 日志
+        - Tests / 测试
+        - Packaging / 打包
+        - Documentation / 文档
+        - Examples / 示例
+        - Internal cleanup / 内部清理
+        - Other / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Benefit / 收益
+      description: Who benefits and how? / 谁会受益？如何受益？
+  - type: textarea
+    id: risks
+    attributes:
+      label: Compatibility or risk / 兼容性或风险
+      description: Could this change existing behavior, examples, docs, or public APIs? / 这是否可能影响现有行为、示例、文档或公开 API？

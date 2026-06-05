@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation / 文档
+    url: https://duskxi.github.io/astrum/
+    about: Read the bilingual documentation before opening an issue. / 提 issue 前可先查阅中英文文档。
+  - name: English documentation
+    url: https://duskxi.github.io/astrum/en/
+    about: English guides and API reference.
+  - name: PyPI package
+    url: https://pypi.org/project/astrum/
+    about: Check the latest published version.

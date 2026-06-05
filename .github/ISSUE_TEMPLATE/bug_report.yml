@@ -1,0 +1,106 @@
+name: Bug report / 缺陷报告
+description: Report a reproducible problem in Astrum. / 报告可复现的 Astrum 问题。
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. A small runnable reproduction is the most useful signal.
+
+        感谢你报告问题。请尽量提供一个最小可运行复现，这会非常有帮助。
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary / 问题概述
+      description: What went wrong? / 发生了什么问题？
+      placeholder: "Example: A downstream task does not receive the expected Ref/F value."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction / 最小复现
+      description: Please paste a small runnable example. / 请粘贴一个尽可能小的可运行示例。
+      render: python
+      placeholder: |
+        import asyncio
+        from astrum import task, run
+
+        @task("a")
+        async def a():
+            return {"value": 1}
+
+        async def main():
+            report = await run()
+            print(report)
+
+        asyncio.run(main())
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior / 期望行为
+      description: What did you expect Astrum to do? / 你期望 Astrum 如何表现？
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior / 实际行为
+      description: What actually happened? Include full traceback if available. / 实际发生了什么？如果有 traceback 请完整贴出。
+      render: text
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area / 影响范围
+      multiple: true
+      options:
+        - Task registration / 任务注册
+        - DAG planning / DAG 规划
+        - Scheduler execution / 调度执行
+        - Ref/F data transport / Ref/F 数据传输
+        - TaskData/DataItem/DTRela manual data transport / 手动数据传输
+        - Retry behavior / 重试行为
+        - ExecutionReport/statistics / 执行报告与统计
+        - Namespace/registry / 命名空间与注册表
+        - Visualization / 可视化
+        - Documentation/examples / 文档或示例
+        - Packaging/installation / 打包或安装
+        - Other / 其他
+    validations:
+      required: true
+  - type: input
+    id: astrum-version
+    attributes:
+      label: Astrum version / Astrum 版本
+      placeholder: "0.1.1"
+    validations:
+      required: true
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version / Python 版本
+      placeholder: "3.11.8"
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system / 操作系统
+      options:
+        - Windows
+        - macOS
+        - Linux
+        - Other / 其他
+    validations:
+      required: true
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context / 补充信息
+      description: Links, screenshots, logs, or anything else that may help. / 链接、截图、日志或其他有帮助的信息。
