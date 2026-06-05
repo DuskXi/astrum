@@ -3,7 +3,7 @@
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue.svg)](#installation--安装)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](#license--许可证)
 [![Docs](https://img.shields.io/badge/docs-MkDocs%20%2B%20Material-526CFE.svg)](https://duskxi.github.io/astrum/)
-[![PyPI](https://img.shields.io/pypi/v/astrum.svg)](https://pypi.org/project/astrum/)
+[![PyPI](https://img.shields.io/pypi/v/astrum.svg?v=2)](https://pypi.org/project/astrum/)
 
 **A lightweight, in-process async DAG orchestrator for Python.**  
 Astrum 是一个轻量、进程内运行的异步复杂多依赖任务调度库，用 Python 装饰器/静态DAG声明任务图，声明式高级依赖传递，自动并行执行无依赖/依赖分支，并返回结构化执行报告。
