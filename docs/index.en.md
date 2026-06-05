@@ -4,20 +4,20 @@ Astrum is a lightweight, in-process async DAG orchestration library for Python. 
 
 ```python
 import asyncio
-from astrum import task, run
-
+from astrum import F, Ref, task, run, AstrumConfig
 
 @task("load")
 async def load() -> dict:
     return {"value": 42}
 
-
 @task("print_value")
-async def print_value(value):
+async def print_value(value: Ref[int, F("load", "value")]) -> None:
     print(value)
 
-
-asyncio.run(run(target_tasks=["print_value"]))
+asyncio.run(run(
+    target_tasks=["print_value"],
+    config=AstrumConfig(skip_type_check=True),
+))
 ```
 
 ## When to use it

@@ -168,9 +168,9 @@ uv run mkdocs build --strict
 
 Current version: **0.1.0**.
 
-Astrum is preparing for its first public PyPI release. The core workflow model is usable, while APIs may still receive small refinements as the project stabilizes.
+Astrum 0.1.0 initial public release; APIs may change in 0.1.x.
 
-Astrum 正在准备首次发布到 PyPI。当前核心工作流模型已经可用，但在 `0.1.x` 阶段仍可能围绕 API 命名、文档和类型检查体验做小幅改进。
+Astrum 已经初次发布到 PyPI。在 `0.1.x` 阶段仍可能围绕 API 命名、文档和类型检查体验做小幅改进。
 
 ## License / 许可证
 
