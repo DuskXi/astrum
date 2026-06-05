@@ -30,6 +30,27 @@ pip install "astrum[viz]"
 
 Examples that render Rich tables or trees, such as the coffee shop workflow, require the `viz` extra.
 
+## How convenient is this library to use? / 这个库使用起来有多方便？
+
+```python
+@workflow.task("expand_query")
+@workflow.task("bm25_search")
+@workflow.task("vector_search")
+@workflow.task("merge_scores")
+@workflow.task("rerank")
+```
+
+实际上会发生:
+
+It will actually happen:
+
+```
+---time--->
+expand_query ─┬─ bm25_search  ─┐
+              └─ vector_search ├─ merge_scores ─ rerank
+embed_query ───────────────────┘
+```
+
 ## Quick Start / 快速开始
 
 The recommended entry point is decorator mode: register functions with `@task`, declare execution dependencies with `depends_on`, pass upstream values with `Ref` / `F`, and call `run()`.
