@@ -16,7 +16,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 
-# 核心逻辑尽量保持零依赖
+# 核心逻辑尽量保持低依赖
 dependencies = [
     "loguru>=0.7.3",
     "pydantic>=2.5.0",
