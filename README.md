@@ -8,11 +8,11 @@
 **A lightweight, in-process async DAG orchestrator for Python.**  
 Astrum 是一个轻量、进程内运行的异步复杂多依赖任务调度库，用 Python 装饰器/静态DAG声明任务图，声明式高级依赖传递，自动并行执行无依赖/依赖分支，并返回结构化执行报告。
 
-可榨干复杂多依赖并行任务系统的最后一滴时间（主要是避免手动编排时候许多的没有必要的await时间），使用场景多见于需要在单个 Python 进程内编排工作流的业务代码中，或者需要在测试环境里模拟复杂 DAG 执行的场景。如Multi-Agent系统、复杂数据处理流程、异步任务编排等。
+Astrum 通过自动并行执行无依赖/依赖已完成分支，减少手动编排 async 工作流时容易产生的不必要等待。使用场景多见于需要在单个 Python 进程内编排工作流的业务代码中，或者需要在测试环境里模拟复杂 DAG 执行的场景。如Multi-Agent系统、复杂数据处理流程、异步任务编排等。
 
 Astrum is a lightweight, in-process, asynchronous task scheduling library designed for complex multi-dependency workflows. It utilizes Python decorators and static DAGs (Directed Acyclic Graphs) to declare task graphs, features declarative advanced dependency passing, and automatically executes independent or branching dependencies in parallel while returning a structured execution report.
 
-It is engineered to squeeze every last drop of performance out of complex(The main purpose is to avoid unnecessary await time during manual arrangement.), multi-dependency parallel task systems. Common use cases include business logic requiring workflow orchestration within a single Python process, or scenarios needing to simulate complex DAG execution in testing environments—such as Multi-Agent systems, complex data processing pipelines, and asynchronous task orchestration.
+Astrum helps reduce unnecessary waiting in manually orchestrated async workflows by automatically running dependency-free branches concurrently, multi-dependency parallel task systems. Common use cases include business logic requiring workflow orchestration within a single Python process, or scenarios needing to simulate complex DAG execution in testing environments—such as Multi-Agent systems, complex data processing pipelines, and asynchronous task orchestration.
 
 ---
 
@@ -65,6 +65,10 @@ It is not a workflow platform. It does not require a scheduler, database, webser
 
 ## How convenient is this library to use? / 这个库使用起来有多方便？
 
+下面只是任务定义的简化示意。实际代码中，任务依赖需要通过 `depends_on` 显式声明，上游结果可以通过 `Ref` / `F` 注入下游参数。
+
+The following is only a simplified task declaration sketch. In real code, dependencies are declared explicitly with `depends_on`, and upstream values can be injected with `Ref` / `F`.
+
 ```python
 @workflow.task("expand_query")
 async def expand_query(...)->...:
@@ -80,6 +84,9 @@ async def merge_scores(...)->...:
     ...
 @workflow.task("rerank")
 async def rerank(...)->...:
+    ...
+@workflow.task("embed_query")
+async def embed_query(...)->...:
     ...
 ```
 
