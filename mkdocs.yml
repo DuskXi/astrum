@@ -1,8 +1,12 @@
 site_name: Astrum
 site_description: Lightweight in-process async DAG orchestration for Python.
 site_author: DuskXi
+site_url: https://duskxi.github.io/astrum/
 docs_dir: docs
 site_dir: site
+
+extra_javascript:
+  - assets/javascripts/language-redirect.js
 
 theme:
   name: material
